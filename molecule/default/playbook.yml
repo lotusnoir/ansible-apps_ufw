@@ -8,6 +8,7 @@
     - role: ansible-apps_ufw
   vars:
     ufw_manage_config: true
+    ufw_docker: false
     ufw_config:
       IPV6: "no"
       DEFAULT_INPUT_POLICY: DROP

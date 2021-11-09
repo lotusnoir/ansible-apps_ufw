@@ -39,7 +39,6 @@
 -A DOCKER-USER -j ufw-docker-logging-deny -p udp -m udp --dport 0:32767 -d 192.168.0.0/16
 -A DOCKER-USER -j ufw-docker-logging-deny -p udp -m udp --dport 0:32767 -d 10.0.0.0/8
 -A DOCKER-USER -j ufw-docker-logging-deny -p udp -m udp --dport 0:32767 -d 172.16.0.0/12
--A DOCKER-USER -j RETURN`
 
 # don't delete the 'COMMIT' line or these rules won't be processed
-COMMIT         
+COMMIT
