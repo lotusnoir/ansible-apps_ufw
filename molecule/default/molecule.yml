@@ -4,14 +4,14 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: ubuntu18_apps_ufw
+  - name: ubuntu18-apps-ufw
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:ubuntu18
     docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  - name: ubuntu20_apps_ufw
+  - name: ubuntu20-apps-ufw
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:ubuntu20
     docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
@@ -20,28 +20,28 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - python3
-  - name: debian10_apps_ufw
+  - name: debian10-apps-ufw
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:debian10
     docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  - name: debian11_apps_ufw
+  - name: debian11-apps-ufw
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:debian11
     docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  - name: centos7_apps_ufw
+  - name: centos7-apps-ufw
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:centos7
     docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  - name: centos8_apps_ufw
+  - name: centos8-apps-ufw
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:centos8
     docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
@@ -50,7 +50,7 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - python3
-  - name: rocky8_apps_ufw
+  - name: rocky8-apps-ufw
     pre_build_image: true
     image: lotusnoir/ansible_molecule_test_images:rocky8
     docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
