@@ -1,35 +1,36 @@
 ---
-- name: Debian | Installing packages
-  package:
+- name: "Debian | Installing packages"
+  ansible.builtin.package:
     name: ufw
     state: present
   when: ansible_os_family == "Debian"
 
-- when: ansible_os_family == "RedHat" or ansible_os_family == "Rocky"
+- name: "Redhat | Tasks for Rocky only"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Rocky"
   block:
-    - name: Redhat | Installing dnf repo
-      dnf:
+    - name: "Redhat | Installing dnf repo"
+      ansible.builtin.dnf:
         name: "epel-release"
         state: present
 
-    - name: Redhat | Installing packages
-      dnf:
+    - name: "Redhat | Installing packages"
+      ansible.builtin.dnf:
         name: ufw
         state: present
 
-- name: Start and enable ufw
+- name: "Start and enable ufw"
   community.general.ufw:
     state: enabled
 
-- name: Configuring service
-  template:
+- name: "Configuring service"
+  ansible.builtin.template:
     src: "ufw.j2"
     dest: "{{ ufw_config_file }}"
     mode: 0644
   notify: reload ufw
   when: ufw_manage_config
 
-- name: Applying rules
+- name: "Applying rules"
   community.general.ufw:
     comment: "{{ item.comment | default(omit) }}"
     default: "{{ item.default | default(omit) }}"
@@ -52,8 +53,8 @@
     to_port: "{{ item.to_port | default(omit) }}"
   with_items: "{{ ufw_rules }}"
 
-- name: Add Docker specific after rules
-  copy:
+- name: "Add Docker specific after rules"
+  ansible.builtin.copy:
     src: 'after.rules'
     dest: '/etc/ufw/after.rules'
     mode: '0640'
