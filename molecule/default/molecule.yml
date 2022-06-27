@@ -61,6 +61,15 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - python3
+  - name: oraclelinux8-apps-ufw
+    pre_build_image: true
+    image: lotusnoir/ansible_molecule_test_images:oraclelinux8
+    docker_host: "${DOCKER_HOST:-unix://var/run/docker.sock}"
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    groups:
+      - python3
 provisioner:
   name: ansible
   playbooks:
