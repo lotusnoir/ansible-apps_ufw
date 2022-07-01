@@ -6,7 +6,7 @@
   when: ansible_os_family == "Debian"
 
 - name: "Redhat | Tasks for Rocky only"
-  when: ansible_os_family == "RedHat" or ansible_os_family == "Rocky"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Rocky" or ansible_os_family == "OracleLinux"
   block:
     - name: "Redhat | Installing dnf repo"
       ansible.builtin.dnf:
