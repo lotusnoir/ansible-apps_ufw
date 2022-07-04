@@ -1,20 +1,25 @@
 ---
-- name: "Debian | Installing packages"
+- name: "DEBIAN | Installing ufw package"
   ansible.builtin.package:
     name: ufw
     state: present
   when: ansible_os_family == "Debian"
 
-- name: "Redhat | Tasks for Rocky only"
-  when: ansible_os_family == "RedHat" or ansible_os_family == "Rocky" or ansible_os_family == "OracleLinux"
+- name: "Redhat | Tasks for Redhat family"
+  when: ansible_os_family in ["RedHat", "Rocky", "OracleLinux" ]
   block:
-    - name: "Redhat | Installing dnf repo"
-      ansible.builtin.dnf:
-        name: "epel-release"
+    - name: "REDHAT | Import EPEL GPG key."
+      ansible.builtin.rpm_key:
+        key: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
         state: present
 
-    - name: "Redhat | Installing packages"
-      ansible.builtin.dnf:
+    - name: "REDHAT | Installing epel-release"
+      ansible.builtin.yum:
+        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+
+    - name: "REDHAT | Installing ufw package"
+      ansible.builtin.yum:
         name: ufw
         state: present
 
