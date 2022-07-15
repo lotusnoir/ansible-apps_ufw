@@ -6,7 +6,7 @@
   when: ansible_os_family == "Debian"
 
 - name: "Redhat | Tasks for Redhat family"
-  when: ansible_os_family in ["RedHat", "Rocky", "OracleLinux" ]
+  when: ansible_os_family in ["RedHat", "Rocky", "OracleLinux"]
   block:
     - name: "REDHAT | Import EPEL GPG key."
       ansible.builtin.rpm_key:
