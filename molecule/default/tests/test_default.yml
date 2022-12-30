@@ -1,9 +1,0 @@
----
-package:
-  ufw:
-    installed: true
-
-#service:
-#  ufw:
-#    enabled: true
-#    running: true

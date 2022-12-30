@@ -1,5 +1,6 @@
 ---
 ### Repo for redhat
+ufw_install_repo: true
 ufw_dnf_repo: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
 
 ### Rules - 3 levels to avoid repeating rules

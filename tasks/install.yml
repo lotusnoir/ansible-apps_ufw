@@ -1,12 +1,6 @@
 ---
-- name: "DEBIAN | Installing ufw package"
-  ansible.builtin.package:
-    name: ufw
-    state: present
-  when: ansible_os_family == "Debian"
-
 - name: "Redhat | Tasks for Redhat family"
-  when: ansible_os_family in ["RedHat", "Rocky", "OracleLinux"]
+  when: ansible_os_family in ["RedHat", "Rocky", "OracleLinux"] and ufw_install_repo|bool
   block:
     - name: "Check if EPEL repo is already configured"
       stat:
@@ -25,10 +19,16 @@
         state: present
       when: not epel_repo.stat.exists
 
-    - name: "REDHAT | Installing ufw package"
-      ansible.builtin.yum:
-        name: ufw
-        state: present
+- name: "Installing requirement"
+  ansible.builtin.package:
+    name: kmod
+    state: present
+  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version == '20')
+
+- name: "Installing ufw package"
+  ansible.builtin.package:
+    name: ufw
+    state: present
 
 - name: "Start and enable ufw"
   community.general.ufw:
