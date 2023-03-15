@@ -11,6 +11,22 @@
 
 Install and configure ufw
 
+For a better usage of this role, you should use it with this plugin: https://github.com/leapfrogonline/ansible-merge-vars
+You can then set variable in differents folders on your inventory and merge all the rule where the host belong when you play the role
+exemple: 
+in inventory/group_vars/all.yml 
+  ufw_all_ufw__to_merge: 
+    - {interface_in: lo,            rule: allow, comment: loopback}
+    - {interface_out: lo,           rule: allow, comment: loopback}
+    - {from_ip: '127.0.0.1/8',      rule: deny, comment: 'Deny localhost v4'}
+    - {from_ip: '10.1.2.3/32',   to_port: '22', proto: tcp, rule: allow, comment: 'bastion_ssh'}
+in inventory/group_vars/docker.yml 
+  ufw_app_docker_ufw__to_merge:
+    - {from_ip: '172.0.0.0/8',      rule: allow, comment: 'Allow containers'}   
+in inventory/group_vars/acng.yml 
+  ufw_acng_ufw__to_merge:
+    - {from_ip: '10.0.0.0/8',      to_port: 8080, proto: tcp, rule: allow, comment: 'all rfc1 vms / acng'}
+
 ## Requirements
 
 none
@@ -28,6 +44,13 @@ See [variables](/defaults/main.yml) for more details.
           gather_facts: true
           roles:
             - role: ansible-apps_ufw
+          pre_tasks:
+           - name: Merge ufw rules
+             merge_vars:
+               suffix_to_merge: ufw__to_merge
+               merged_var_name: ufw_rules
+               expected_type: 'dict'
+
 
 
 ## License
