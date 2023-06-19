@@ -24,3 +24,5 @@ ufw_config:
 
 ### docker iptables special rules
 ufw_docker: false
+#ignore icmp checks
+ufw_icmp_check_disable: false

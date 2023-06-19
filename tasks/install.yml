@@ -71,3 +71,18 @@
     dest: '/etc/ufw/after.rules'
     mode: '0640'
   when: ufw_docker
+
+- name: "Remove icmp check to ping network equipements"
+  ansible.builtin.lineinfile:
+    path: /etc/ufw/before.rules
+    regexp: '^-A ufw-before-input -m conntrack --ctstate INVALID -j DROP'
+    line: "#-A ufw-before-input -m conntrack --ctstate INVALID -j DROP"
+  when: ufw_icmp_check_disable|bool
+
+- name: "Remove icmp check to ping network equipements"
+  ansible.builtin.lineinfile:
+    path: /etc/ufw/before.rules
+    regexp: '^-A ufw-before-input -p icmp -j ACCEPT$'
+    insertafter: '-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT'
+    line: "-A ufw-before-input -p icmp -j ACCEPT"
+  when: ufw_icmp_check_disable|bool
