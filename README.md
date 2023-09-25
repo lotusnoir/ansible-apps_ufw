@@ -49,6 +49,7 @@ See [variables](/defaults/main.yml) for more details.
 
 ## Examples
 
+
         ---
         - hosts: apps_ufw
           become: true
