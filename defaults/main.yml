@@ -3,7 +3,7 @@
 ufw_install_repo: true
 
 ### Rules - 3 levels to avoid repeating rules
-ufw_rules: "{{ ufw_common_rules + ufw_group_rules| default([]) + ufw_host_rules| default([]) }}"
+ufw_rules: "{{ ufw_common_rules + ufw_group_rules | default([] ) + ufw_host_rules | default([] ) }}"
 ufw_common_rules:
   - {from_ip: '127.0.0.1/8', rule: allow, comment: 'Allow localhost'}
   - {from_ip: '0.0.0.0/0', to_port: 22, proto: tcp, rule: allow, comment: 'bastion / ssh'}
