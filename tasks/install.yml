@@ -43,8 +43,11 @@
   until: pkg_result is success
 
 - name: "Start and enable ufw"
-  community.general.ufw:
-    state: enabled
+  ansible.builtin.service:
+    daemon_reload: true
+    name: ufw
+    state: started
+    enabled: true
 
 - name: "Configuring service"
   ansible.builtin.template:
