@@ -63,12 +63,12 @@
         name: ufw
         state: started
         enabled: true
+      notify: Restart ufw
 
     - name: "REDHAT: force-reload"
       ansible.builtin.command: /usr/libexec/ufw/ufw-init force-reload
       changed_when: false
       failed_when: false
-      notify: Restart ufw
 
 - name: "Applying rules"
   community.general.ufw:
