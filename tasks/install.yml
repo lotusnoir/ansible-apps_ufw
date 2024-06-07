@@ -1,8 +1,8 @@
 ---
-- name: "Redhat | Tasks for Redhat family"
+- name: "REDHAT | Tasks for Redhat family"
   when: ansible_os_family in ["RedHat", "Rocky", "OracleLinux"] and ufw_install_repo|bool
   block:
-    - name: "Check if EPEL repo is already configured"
+    - name: "REDHAT | Check if EPEL repo is already configured"
       ansible.builtin.stat:
         path: "/etc/yum.repos.d/epel.repo"
       register: epel_repo
@@ -43,11 +43,8 @@
   until: pkg_result is success
 
 - name: "Start and enable ufw"
-  ansible.builtin.service:
-    daemon_reload: true
-    name: ufw
-    state: started
-    enabled: true
+  community.general.ufw:
+    state: enabled
 
 - name: "Configuring service"
   ansible.builtin.template:
@@ -56,6 +53,22 @@
     mode: '0644'
   notify: Reload ufw
   when: ufw_manage_config
+
+- name: "REDHAT | Fix systemd starting failure"
+  when: ansible_os_family in ["RedHat", "Rocky", "OracleLinux"]
+  block:
+    - name: "REDHAT: Start service"
+      ansible.builtin.service:
+        daemon_reload: true
+        name: ufw
+        state: started
+        enabled: true
+
+    - name: "REDHAT: force-reload"
+      ansible.builtin.command: /usr/libexec/ufw/ufw-init force-reload
+      changed_when: false
+      failed_when: false
+      notify: Restart ufw
 
 - name: "Applying rules"
   community.general.ufw:
