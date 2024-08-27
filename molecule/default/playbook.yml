@@ -3,6 +3,8 @@
   hosts: all
   become: true
   any_errors_fatal: true
+  vars:
+    ufw_start_service: false
 
   tasks:
     - name: Include role
