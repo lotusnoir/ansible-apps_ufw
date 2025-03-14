@@ -21,8 +21,11 @@ ufw_config:
   IPT_SYSCTL: /etc/ufw/sysctl.conf
   IPT_MODULES: ""
 
-### docker iptables special rules
+### before and after rules
+# docker iptables special rules
 ufw_docker: false
-#ignore icmp checks
+# ignore icmp checks
 ufw_icmp_check_disable: false
+
 ufw_before_rules: []
+ufw_after_rules: []

@@ -94,33 +94,18 @@
     to_port: "{{ item.to_port | default(omit) }}"
   with_items: "{{ ufw_rules }}"
 
-- name: "Add Docker specific after rules"
-  ansible.builtin.copy:
-    src: "after.rules"
-    dest: "/etc/ufw/after.rules"
+- name: "Add Docker specific before rules"
+  ansible.builtin.template:
+    src: "before.rules.j2"
+    dest: "/etc/ufw/before.rules"
+    owner: "root"
+    group: "root"
     mode: "0640"
-  when: ufw_docker
 
-- name: "Remove icmp check to ping network equipements"
-  ansible.builtin.lineinfile:
-    path: /etc/ufw/before.rules
-    regexp: "^-A ufw-before-input -m conntrack --ctstate INVALID -j DROP"
-    line: "#-A ufw-before-input -m conntrack --ctstate INVALID -j DROP"
-  when: ufw_icmp_check_disable|bool
-
-- name: "Remove icmp check to ping network equipements"
-  ansible.builtin.lineinfile:
-    path: /etc/ufw/before.rules
-    regexp: "^-A ufw-before-input -p icmp -j ACCEPT$"
-    insertafter: "-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT"
-    line: "-A ufw-before-input -p icmp -j ACCEPT"
-  when: ufw_icmp_check_disable|bool
-
-- name: "Remove icmp check to ping network equipements"
-  ansible.builtin.lineinfile:
-    path: /etc/ufw/before.rules
-    regexp: "{{ item }}"
-    insertafter: "-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT"
-    line: "{{ item }}"
-  with_items: "{{ ufw_before_rules }}"
-  when: ufw_before_rules is defined and ufw_before_rules | length > 0
+- name: "Add Docker specific after rules"
+  ansible.builtin.template:
+    src: "after.rules.j2"
+    dest: "/etc/ufw/after.rules"
+    owner: "root"
+    group: "root"
+    mode: "0640"
