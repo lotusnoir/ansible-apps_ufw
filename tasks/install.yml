@@ -42,11 +42,6 @@
   delay: 10
   until: pkg_result is success
 
-- name: "Start and enable ufw"
-  community.general.ufw:
-    state: enabled
-  when: ufw_start_service | bool
-
 - name: "Configuring service"
   ansible.builtin.template:
     src: "ufw.j2"
@@ -109,3 +104,8 @@
     owner: "root"
     group: "root"
     mode: "0640"
+
+- name: "Start and enable ufw"
+  community.general.ufw:
+    state: enabled
+  when: ufw_start_service | bool
