@@ -39,7 +39,6 @@ in inventory/group_vars/acng.yml
   ufw_acng_ufw__to_merge:
     - {from_ip: '10.0.0.0/8',      to_port: 8080, proto: tcp, rule: allow, comment: 'all rfc1 vms / acng'}
 
-
 ## Requirements
 
 none
@@ -64,6 +63,7 @@ See [variables](/defaults/main.yml) for more details.
                suffix_to_merge: ufw__to_merge
                merged_var_name: ufw_rules
                expected_type: 'dict'
+
 
 
 ## License
