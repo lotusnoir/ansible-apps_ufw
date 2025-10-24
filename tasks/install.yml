@@ -14,44 +14,39 @@
       when: not epel_repo.stat.exists
 
     - name: "REDHAT | Installing epel-release"
-      ansible.builtin.yum:
+      ansible.builtin.dnf:
         name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
         state: present
-      register: pkg_result
+      register: __pkg_result
       retries: 12
       delay: 10
-      until: pkg_result is success
+      until: __pkg_result is success
       when: not epel_repo.stat.exists
 
 - name: "Installing requirement"
   ansible.builtin.package:
     name: kmod
     state: present
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
+  until: __pkg_result is success
   when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version == '20')
 
 - name: "Installing ufw package"
   ansible.builtin.package:
     name: ufw
     state: present
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
-
-- name: "Start and enable ufw"
-  community.general.ufw:
-    state: enabled
-  when: ufw_start_service | bool
+  until: __pkg_result is success
 
 - name: "Configuring service"
   ansible.builtin.template:
     src: "ufw.j2"
     dest: "{{ ufw_config_file }}"
-    mode: '0644'
+    mode: "0644"
   notify: Reload ufw
   when: ufw_manage_config
 
@@ -94,33 +89,23 @@
     to_port: "{{ item.to_port | default(omit) }}"
   with_items: "{{ ufw_rules }}"
 
+- name: "Add Docker specific before rules"
+  ansible.builtin.template:
+    src: "before.rules.j2"
+    dest: "/etc/ufw/before.rules"
+    owner: "root"
+    group: "root"
+    mode: "0640"
+
 - name: "Add Docker specific after rules"
-  ansible.builtin.copy:
-    src: 'after.rules'
-    dest: '/etc/ufw/after.rules'
-    mode: '0640'
-  when: ufw_docker
+  ansible.builtin.template:
+    src: "after.rules.j2"
+    dest: "/etc/ufw/after.rules"
+    owner: "root"
+    group: "root"
+    mode: "0640"
 
-- name: "Remove icmp check to ping network equipements"
-  ansible.builtin.lineinfile:
-    path: /etc/ufw/before.rules
-    regexp: '^-A ufw-before-input -m conntrack --ctstate INVALID -j DROP'
-    line: "#-A ufw-before-input -m conntrack --ctstate INVALID -j DROP"
-  when: ufw_icmp_check_disable|bool
-
-- name: "Remove icmp check to ping network equipements"
-  ansible.builtin.lineinfile:
-    path: /etc/ufw/before.rules
-    regexp: '^-A ufw-before-input -p icmp -j ACCEPT$'
-    insertafter: '-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT'
-    line: "-A ufw-before-input -p icmp -j ACCEPT"
-  when: ufw_icmp_check_disable|bool
-
-- name: "Remove icmp check to ping network equipements"
-  ansible.builtin.lineinfile:
-    path: /etc/ufw/before.rules
-    regexp: "{{ item }}"
-    insertafter: '-A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT'
-    line: "{{ item }}"
-  with_items: "{{ ufw_before_rules }}"
-  when: ufw_before_rules is defined and ufw_before_rules | length > 0
+- name: "Start and enable ufw"
+  community.general.ufw:
+    state: enabled
+  when: ufw_start_service | bool
