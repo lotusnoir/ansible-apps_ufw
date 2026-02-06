@@ -1,6 +1,6 @@
 ---
 - name: "REDHAT | Tasks for Redhat family"
-  when: ansible_os_family in ["RedHat", "Rocky", "OracleLinux"] and ufw_install_repo|bool
+  when: ansible_facts.os_family in ["RedHat", "Rocky", "OracleLinux"] and ufw_install_repo|bool
   block:
     - name: "REDHAT | Check if EPEL repo is already configured"
       ansible.builtin.stat:
@@ -9,13 +9,13 @@
 
     - name: "REDHAT | Import EPEL GPG key."
       ansible.builtin.rpm_key:
-        key: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+        key: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts.distribution_major_version }}"
         state: present
       when: not epel_repo.stat.exists
 
     - name: "REDHAT | Installing epel-release"
       ansible.builtin.dnf:
-        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts.distribution_major_version }}.noarch.rpm"
         state: present
       register: __pkg_result
       retries: 12
@@ -31,7 +31,7 @@
   retries: 12
   delay: 10
   until: __pkg_result is success
-  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version == '20')
+  when: (ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_major_version == '20')
 
 - name: "Installing ufw package"
   ansible.builtin.package:
@@ -51,7 +51,7 @@
   when: ufw_manage_config
 
 - name: "REDHAT | Fix systemd starting failure"
-  when: ansible_os_family in ["RedHat", "Rocky", "OracleLinux"]
+  when: ansible_facts.os_family in ["RedHat", "Rocky", "OracleLinux"]
   block:
     - name: "REDHAT: Start service"
       ansible.builtin.service:
